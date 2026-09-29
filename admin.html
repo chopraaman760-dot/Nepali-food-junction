@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nepali Food Junction - Admin Panel</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="admin-container">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo-area">
+            <div class="logo-icon">
+                🍜
+            </div>
+
+            <div>
+                <h2>Nepali Food</h2>
+                <span>Junction Admin</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <button class="menu-item active" onclick="showSection('dashboard', this)">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="menu-item" onclick="showSection('orders', this)">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Orders</span>
+                <b class="notification-badge">3</b>
+            </button>
+
+            <button class="menu-item" onclick="showSection('menu', this)">
+                <i class="fa-solid fa-utensils"></i>
+                <span>Menu</span>
+            </button>
+
+            <button class="menu-item" onclick="showSection('customers', this)">
+                <i class="fa-solid fa-users"></i>
+                <span>Customers</span>
+            </button>
+
+            <button class="menu-item" onclick="showSection('payments', this)">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Payments</span>
+            </button>
+
+            <button class="menu-item" onclick="showSection('reports', this)">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>Reports</span>
+            </button>
+
+            <button class="menu-item" onclick="showSection('settings', this)">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="admin-profile">
+                <div class="profile-avatar">
+                    A
+                </div>
+
+                <div>
+                    <strong>Admin</strong>
+                    <small>Administrator</small>
+                </div>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">
+                        Welcome back, Admin 👋
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="icon-btn" onclick="showNotifications()">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="top-profile">
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-text">
+                        <strong>Admin</strong>
+                        <span>Nepali Food Junction</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section id="dashboard" class="content-section active-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Dashboard Overview</h2>
+                    <p>Here's what's happening today.</p>
+                </div>
+
+                <button class="primary-btn" onclick="refreshDashboard()">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <!-- STAT CARDS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orders-icon">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Today's Orders</span>
+                        <h3 id="todayOrders">12</h3>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            12% from yesterday
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon sales-icon">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Today's Sales</span>
+                        <h3 id="todaySales">₹4,850</h3>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            8% from yesterday
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon pending-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Pending Orders</span>
+                        <h3 id="pendingOrders">3</h3>
+                        <small class="warning">
+                            Need attention
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon customer-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Total Customers</span>
+                        <h3 id="totalCustomers">248</h3>
+                        <small class="positive">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            18 new this week
+                        </small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD LOWER GRID -->
+
+            <div class="dashboard-grid">
+
+                <!-- RECENT ORDERS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Recent Orders</h3>
+                            <p>Latest customer orders</p>
+                        </div>
+
+                        <button class="text-btn"
+                                onclick="showSection('orders', document.querySelector('.menu-item:nth-child(2)'))">
+                            View All
+                        </button>
+
+                    </div>
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentOrdersTable"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOP ITEMS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <h3>Popular Items</h3>
+                            <p>Best selling dishes</p>
+                        </div>
+
+                    </div>
+
+                    <div class="popular-list">
+
+                        <div class="popular-item">
+                            <div class="food-thumb">🥟</div>
+                            <div class="popular-info">
+                                <strong>Chicken Steam Momos</strong>
+                                <span>42 orders</span>
+                            </div>
+                            <b>₹100</b>
+                        </div>
+
+                        <div class="popular-item">
+                            <div class="food-thumb">🍜</div>
+                            <div class="popular-info">
+                                <strong>Chicken Chowmein</strong>
+                                <span>36 orders</span>
+                            </div>
+                            <b>₹100</b>
+                        </div>
+
+                        <div class="popular-item">
+                            <div class="food-thumb">🍚</div>
+                            <div class="popular-info">
+                                <strong>Chicken Fried Rice</strong>
+                                <span>29 orders</span>
+                            </div>
+                            <b>₹120</b>
+                        </div>
+
+                        <div class="popular-item">
+                            <div class="food-thumb">🌶️</div>
+                            <div class="popular-info">
+                                <strong>Chilli Momos</strong>
+                                <span>24 orders</span>
+                            </div>
+                            <b>₹130</b>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="panel quick-actions-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Quick Actions</h3>
+                        <p>Manage your restaurant quickly</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+
+                    <button onclick="openAddMenuModal()">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Menu Item
+                    </button>
+
+                    <button onclick="showSection('orders', document.querySelector('.menu-item:nth-child(2)'))">
+                        <i class="fa-solid fa-list-check"></i>
+                        Manage Orders
+                    </button>
+
+                    <button onclick="showSection('customers', document.querySelector('.menu-item:nth-child(4)'))">
+                        <i class="fa-solid fa-user-plus"></i>
+                        Customers
+                    </button>
+
+                    <button onclick="showSection('reports', document.querySelector('.menu-item:nth-child(6)'))">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        Sales Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ORDERS ================= -->
+
+        <section id="orders" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Orders</h2>
+                    <p>Manage customer orders.</p>
+                </div>
+
+                <button class="primary-btn" onclick="loadOrders()">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    Refresh
+                </button>
+
+            </div>
+
+            <div class="filter-bar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        id="orderSearch"
+                        placeholder="Search order or customer..."
+                        oninput="searchOrders()">
+                </div>
+
+                <select id="orderStatusFilter" onchange="filterOrders()">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Items</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="ordersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= MENU ================= -->
+
+        <section id="menu" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Menu Management</h2>
+                    <p>Add, edit or disable food items.</p>
+                </div>
+
+                <button class="primary-btn" onclick="openAddMenuModal()">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Item
+                </button>
+
+            </div>
+
+            <div class="filter-bar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="text"
+                        id="menuSearch"
+                        placeholder="Search menu item..."
+                        oninput="searchMenu()">
+                </div>
+
+                <select id="categoryFilter" onchange="filterMenu()">
+                    <option value="all">All Categories</option>
+                    <option value="Soup">Soup</option>
+                    <option value="Chowmein">Chowmein</option>
+                    <option value="Momos">Momos</option>
+                    <option value="Rolls">Rolls</option>
+                    <option value="Paneer">Paneer</option>
+                    <option value="Fried Rice">Fried Rice</option>
+                    <option value="Manchurian">Manchurian</option>
+                </select>
+
+            </div>
+
+            <div class="menu-grid" id="menuGrid"></div>
+
+        </section>
+
+
+        <!-- ================= CUSTOMERS ================= -->
+
+        <section id="customers" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Customers</h2>
+                    <p>View your customer database.</p>
+                </div>
+
+            </div>
+
+            <div class="filter-bar">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="customerSearch"
+                        placeholder="Search customer..."
+                        oninput="searchCustomers()">
+
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Customer</th>
+                                <th>Mobile</th>
+                                <th>Orders</th>
+                                <th>Total Spent</th>
+                                <th>Last Order</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="customersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PAYMENTS ================= -->
+
+        <section id="payments" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Payments</h2>
+                    <p>Track order payment information.</p>
+                </div>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-icon sales-icon">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Paid Today</span>
+                        <h3>₹4,250</h3>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pending-icon">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Pending</span>
+                        <h3>₹600</h3>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orders-icon">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <span>Refunds</span>
+                        <h3>₹0</h3>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>Payment Transactions</h3>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Order ID</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>TXN894521</td>
+                                <td>NFJ1025</td>
+                                <td>₹270</td>
+                                <td>UPI</td>
+                                <td><span class="status completed">Paid</span></td>
+                                <td>Today, 12:42 PM</td>
+                            </tr>
+
+                            <tr>
+                                <td>TXN894520</td>
+                                <td>NFJ1024</td>
+                                <td>₹450</td>
+                                <td>UPI</td>
+                                <td><span class="status completed">Paid</span></td>
+                                <td>Today, 12:20 PM</td>
+                            </tr>
+
+                            <tr>
+                                <td>TXN894519</td>
+                                <td>NFJ1023</td>
+                                <td>₹180</td>
+                                <td>Cash</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>Today, 11:58 AM</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section id="reports" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Reports</h2>
+                    <p>Restaurant sales overview.</p>
+                </div>
+
+                <select class="report-select">
+                    <option>This Week</option>
+                    <option>This Month</option>
+                    <option>Last 3 Months</option>
+                    <option>This Year</option>
+                </select>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h3>Sales Overview</h3>
+                        <p>Demo sales chart</p>
+                    </div>
+
+                </div>
+
+                <div class="fake-chart">
+
+                    <div class="chart-bar" style="height:45%;">
+                        <span>Mon</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:65%;">
+                        <span>Tue</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:52%;">
+                        <span>Wed</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:80%;">
+                        <span>Thu</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:70%;">
+                        <span>Fri</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:95%;">
+                        <span>Sat</span>
+                    </div>
+
+                    <div class="chart-bar" style="height:88%;">
+                        <span>Sun</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SETTINGS ================= -->
+
+        <section id="settings" class="content-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Settings</h2>
+                    <p>Manage restaurant settings.</p>
+                </div>
+
+            </div>
+
+            <div class="settings-grid">
+
+                <div class="panel settings-card">
+
+                    <i class="fa-solid fa-store"></i>
+
+                    <h3>Restaurant Information</h3>
+
+                    <p>
+                        Manage restaurant name, address,
+                        phone and opening hours.
+                    </p>
+
+                    <button class="secondary-btn">
+                        Manage
+                    </button>
+
+                </div>
+
+
+                <div class="panel settings-card">
+
+                    <i class="fa-solid fa-credit-card"></i>
+
+                    <h3>Payment Settings</h3>
+
+                    <p>
+                        Manage UPI and payment gateway settings.
+                    </p>
+
+                    <button class="secondary-btn">
+                        Manage
+                    </button>
+
+                </div>
+
+
+                <div class="panel settings-card">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <h3>Admin Account</h3>
+
+                    <p>
+                        Manage administrator account and password.
+                    </p>
+
+                    <button class="secondary-btn">
+                        Manage
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= ADD MENU MODAL ================= -->
+
+<div class="modal-overlay" id="menuModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Add Menu Item</h2>
+                <p>Add a new food item.</p>
+            </div>
+
+            <button class="close-btn" onclick="closeMenuModal()">
+                ×
+            </button>
+
+        </div>
+
+        <form id="menuForm" onsubmit="addMenuItem(event)">
+
+            <div class="form-group">
+                <label>Food Name</label>
+                <input
+                    type="text"
+                    id="foodName"
+                    placeholder="Example: Chicken Momos"
+                    required>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label>Category</label>
+
+                    <select id="foodCategory" required>
+                        <option value="">Select Category</option>
+                        <option>Soup</option>
+                        <option>Chowmein</option>
+                        <option>Momos</option>
+                        <option>Rolls</option>
+                        <option>Paneer</option>
+                        <option>Fried Rice</option>
+                        <option>Manchurian</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Price</label>
+
+                    <input
+                        type="number"
+                        id="foodPrice"
+                        placeholder="100"
+                        min="1"
+                        required>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Description</label>
+
+                <textarea
+                    id="foodDescription"
+                    placeholder="Short description"></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Image URL</label>
+
+                <input
+                    type="url"
+                    id="foodImage"
+                    placeholder="https://example.com/image.jpg">
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeMenuModal()">
+                    Cancel
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Item
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ORDER MODAL ================= -->
+
+<div class="modal-overlay" id="orderModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Order Details</h2>
+                <p id="orderModalId">Order</p>
+            </div>
+
+            <button class="close-btn" onclick="closeOrderModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div id="orderDetails"></div>
+
+    </div>
+
+</div>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>
