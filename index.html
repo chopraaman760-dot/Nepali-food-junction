@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nepali Food Junction</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f7f7f7;
+    color:#222;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:bold;
+    color:#ffb300;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 10px;
+}
+
+.cart-btn{
+    background:#ff9800;
+    color:#111;
+    border:0;
+    padding:10px 16px;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.hero{
+    min-height:420px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+    color:white;
+    background:
+    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+    url("https://images.unsplash.com/photo-1562565652-a0d8f0c59eb4?auto=format&fit=crop&w=1400&q=80")
+    center/cover;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.hero p{
+    font-size:20px;
+}
+
+.container{
+    width:92%;
+    max-width:1200px;
+    margin:auto;
+}
+
+section{
+    padding:45px 0;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.section-title h2{
+    font-size:32px;
+}
+
+.category{
+    margin-top:35px;
+}
+
+.category h3{
+    font-size:25px;
+    margin-bottom:18px;
+    border-left:5px solid #ff9800;
+    padding-left:10px;
+}
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.food-card{
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+    transition:.25s;
+}
+
+.food-card:hover{
+    transform:translateY(-5px);
+}
+
+.food-card img{
+    width:100%;
+    height:190px;
+    object-fit:cover;
+    display:block;
+}
+
+.food-info{
+    padding:15px;
+}
+
+.food-info h4{
+    font-size:19px;
+    margin-bottom:8px;
+}
+
+.price{
+    color:#e65100;
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+.add-btn{
+    width:100%;
+    padding:11px;
+    border:0;
+    background:#ff9800;
+    color:#111;
+    font-weight:bold;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* CART */
+
+.cart-sidebar{
+    position:fixed;
+    right:-430px;
+    top:0;
+    width:400px;
+    max-width:95%;
+    height:100vh;
+    background:white;
+    z-index:2000;
+    box-shadow:-5px 0 20px rgba(0,0,0,.3);
+    transition:.3s;
+    padding:20px;
+    overflow-y:auto;
+}
+
+.cart-sidebar.open{
+    right:0;
+}
+
+.cart-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.close-btn{
+    border:0;
+    background:#eee;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:20px;
+}
+
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px solid #ddd;
+    padding:12px 0;
+}
+
+.cart-item-info{
+    flex:1;
+}
+
+.cart-item-info strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.qty-controls{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.qty-controls button{
+    width:28px;
+    height:28px;
+    border:0;
+    background:#ff9800;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.remove-btn{
+    border:0;
+    background:#e53935;
+    color:white;
+    padding:5px 8px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.cart-total{
+    font-size:22px;
+    font-weight:bold;
+    margin:20px 0;
+    text-align:right;
+}
+
+.checkout-btn{
+    width:100%;
+    background:#25d366;
+    color:white;
+    border:0;
+    padding:14px;
+    border-radius:8px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:3000;
+    padding:15px;
+}
+
+.modal-content{
+    width:100%;
+    max-width:500px;
+    max-height:92vh;
+    overflow-y:auto;
+    background:white;
+    border-radius:15px;
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+.input-group input,
+.input-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:7px;
+    font-size:15px;
+}
+
+.input-group textarea{
+    min-height:90px;
+}
+
+.primary-btn{
+    width:100%;
+    background:#ff9800;
+    border:0;
+    padding:13px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.payment-box{
+    text-align:center;
+}
+
+.payment-amount{
+    font-size:28px;
+    color:#e65100;
+    font-weight:bold;
+    margin:10px 0 20px;
+}
+
+#qrCode{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:220px;
+    margin:15px auto;
+}
+
+#qrCode img{
+    padding:8px;
+    border:1px solid #ddd;
+}
+
+.upi-btn{
+    display:block;
+    width:100%;
+    text-decoration:none;
+    background:#673ab7;
+    color:white;
+    padding:13px;
+    border-radius:8px;
+    margin:15px 0;
+    font-weight:bold;
+}
+
+.utr-note{
+    background:#fff3cd;
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+    margin:15px 0;
+}
+
+.whatsapp-btn{
+    width:100%;
+    background:#25d366;
+    color:white;
+    border:0;
+    padding:14px;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.empty-cart{
+    text-align:center;
+    padding:30px 10px;
+    color:#777;
+}
+
+footer{
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:30px 15px;
+}
+
+@media(max-width:700px){
+
+    header{
+        padding:12px 15px;
+    }
+
+    nav{
+        display:none;
+    }
+
+    .hero h1{
+        font-size:34px;
+    }
+
+    .hero p{
+        font-size:17px;
+    }
+
+    .cart-sidebar{
+        width:95%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🍜 Nepali Food Junction
+</div>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#menu">Menu</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<button class="cart-btn" onclick="openCart()">
+🛒 Cart (<span id="cartCount">0</span>)
+</button>
+
+</header>
+
+
+<section class="hero" id="home">
+
+<div>
+
+<h1>Nepali Food Junction</h1>
+
+<p>Authentic Taste • Fresh Food • Fast Service</p>
+
+<br>
+
+<button class="cart-btn"
+onclick="document.getElementById('menu').scrollIntoView()">
+Order Now
+</button>
+
+</div>
+
+</section>
+
+
+<section id="menu">
+
+<div class="container">
+
+<div class="section-title">
+<h2>Our Menu</h2>
+<p>Choose your favourite food</p>
+</div>
+
+
+<!-- SOUP -->
+
+<div class="category">
+
+<h3>🍲 Soup</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Soup</h4>
+<div class="price">₹80</div>
+<button class="add-btn" onclick="addToCart('Veg Soup',80)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Soup</h4>
+<div class="price">₹100</div>
+<button class="add-btn" onclick="addToCart('Chicken Soup',100)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Manchow Soup</h4>
+<div class="price">₹90</div>
+<button class="add-btn" onclick="addToCart('Manchow Soup',90)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Manchow Soup</h4>
+<div class="price">₹120</div>
+<button class="add-btn" onclick="addToCart('Chicken Manchow Soup',120)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- CHOWMEIN -->
+
+<div class="category">
+
+<h3>🍜 Chowmein</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Chowmein</h4>
+<div class="price">₹70</div>
+<button class="add-btn" onclick="addToCart('Veg Chowmein',70)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Chowmein</h4>
+<div class="price">₹100</div>
+<button class="add-btn" onclick="addToCart('Chicken Chowmein',100)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Egg Chowmein</h4>
+<div class="price">₹90</div>
+<button class="add-btn" onclick="addToCart('Egg Chowmein',90)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Nepali Special Chowmein</h4>
+<div class="price">₹130</div>
+<button class="add-btn" onclick="addToCart('Nepali Special Chowmein',130)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- MOMOS -->
+
+<div class="category">
+
+<h3>🥟 Momos</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Steam Momos</h4>
+<div class="price">₹80</div>
+<button class="add-btn" onclick="addToCart('Veg Steam Momos',80)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Steam Momos</h4>
+<div class="price">₹100</div>
+<button class="add-btn" onclick="addToCart('Chicken Steam Momos',100)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Fried Momos</h4>
+<div class="price">₹120</div>
+<button class="add-btn" onclick="addToCart('Chicken Fried Momos',120)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chilli Momos</h4>
+<div class="price">₹130</div>
+<button class="add-btn" onclick="addToCart('Chilli Momos',130)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ROLLS -->
+
+<div class="category">
+
+<h3>🌯 Rolls</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Roll</h4>
+<div class="price">₹70</div>
+<button class="add-btn" onclick="addToCart('Veg Roll',70)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Paneer Roll</h4>
+<div class="price">₹90</div>
+<button class="add-btn" onclick="addToCart('Paneer Roll',90)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Roll</h4>
+<div class="price">₹110</div>
+<button class="add-btn" onclick="addToCart('Chicken Roll',110)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- PANEER -->
+
+<div class="category">
+
+<h3>🧀 Paneer</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chilli Paneer Dry</h4>
+<div class="price">₹140</div>
+<button class="add-btn" onclick="addToCart('Chilli Paneer Dry',140)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chilli Paneer Gravy</h4>
+<div class="price">₹150</div>
+<button class="add-btn" onclick="addToCart('Chilli Paneer Gravy',150)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chilli Garlic Paneer</h4>
+<div class="price">₹160</div>
+<button class="add-btn" onclick="addToCart('Chilli Garlic Paneer',160)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- FRIED RICE -->
+
+<div class="category">
+
+<h3>🍚 Fried Rice</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Fried Rice</h4>
+<div class="price">₹80</div>
+<button class="add-btn" onclick="addToCart('Veg Fried Rice',80)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Egg Fried Rice</h4>
+<div class="price">₹100</div>
+<button class="add-btn" onclick="addToCart('Egg Fried Rice',100)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Fried Rice</h4>
+<div class="price">₹120</div>
+<button class="add-btn" onclick="addToCart('Chicken Fried Rice',120)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- MANCHURIAN -->
+
+<div class="category">
+
+<h3>🥢 Manchurian</h3>
+
+<div class="food-grid">
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Manchurian Dry</h4>
+<div class="price">₹120</div>
+<button class="add-btn" onclick="addToCart('Veg Manchurian Dry',120)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Veg Manchurian Gravy</h4>
+<div class="price">₹130</div>
+<button class="add-btn" onclick="addToCart('Veg Manchurian Gravy',130)">Add to Cart</button>
+</div>
+</div>
+
+<div class="food-card">
+<img src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=700&q=80">
+<div class="food-info">
+<h4>Chicken Manchurian</h4>
+<div class="price">₹160</div>
+<button class="add-btn" onclick="addToCart('Chicken Manchurian',160)">Add to Cart</button>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+
+<section id="about">
+
+<div class="container">
+
+<div class="section-title">
+<h2>About Us</h2>
+</div>
+
+<p style="text-align:center;line-height:1.8;">
+Welcome to <b>Nepali Food Junction</b>.
+Enjoy delicious Nepali, Chinese and fast food
+prepared with fresh ingredients and authentic flavours.
+</p>
+
+</div>
+
+</section>
+
+
+<section id="contact">
+
+<div class="container">
+
+<div class="section-title">
+<h2>Contact Us</h2>
+</div>
+
+<p style="text-align:center;line-height:2;">
+📞 WhatsApp: 9149920841
+<br>
+🍜 Nepali Food Junction
+</p>
+
+</div>
+
+</section>
+
+
+<!-- CART -->
+
+<div class="cart-sidebar" id="cartSidebar">
+
+<div class="cart-header">
+
+<h2>Your Cart</h2>
+
+<button class="close-btn" onclick="closeCart()">×</button>
+
+</div>
+
+<div id="cartItems"></div>
+
+<div class="cart-total">
+Total: ₹<span id="cartTotal">0</span>
+</div>
+
+<button class="checkout-btn"
+onclick="openCustomerModal()">
+Continue to Checkout
+</button>
+
+</div>
+
+
+<!-- CUSTOMER MODAL -->
+
+<div class="modal" id="customerModal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h2>Customer Details</h2>
+
+<button class="close-btn"
+onclick="closeCustomerModal()">×</button>
+
+</div>
+
+<div class="input-group">
+<label>Customer Name</label>
+<input type="text" id="customerName" placeholder="Enter your name">
+</div>
+
+<div class="input-group">
+<label>Phone Number</label>
+<input type="tel" id="customerPhone" placeholder="Enter phone number">
+</div>
+
+<div class="input-group">
+<label>Delivery Address</label>
+<textarea id="customerAddress" placeholder="Enter complete delivery address"></textarea>
+</div>
+
+<button class="primary-btn"
+onclick="continueToPayment()">
+Continue to Payment
+</button>
+
+</div>
+</div>
+
+
+<!-- PAYMENT MODAL -->
+
+<div class="modal" id="paymentModal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h2>UPI Payment</h2>
+
+<button class="close-btn"
+onclick="closePaymentModal()">×</button>
+
+</div>
+
+<div class="payment-box">
+
+<p>Order Amount</p>
+
+<div class="payment-amount">
+₹<span id="paymentAmount">0</span>
+</div>
+
+<div id="qrCode"></div>
+
+<p>Scan QR code using any UPI App</p>
+
+<a id="upiButton"
+class="upi-btn"
+href="#">
+📱 Open UPI Payment App
+</a>
+
+<div class="utr-note">
+After payment, enter your <b>UTR / Transaction ID</b> below.
+</div>
+
+<div class="input-group">
+
+<label>UTR / Transaction ID</label>
+
+<input
+type="text"
+id="utrNumber"
+placeholder="Enter UTR / Transaction ID">
+
+</div>
+
+<button class="whatsapp-btn"
+onclick="confirmOrder()">
+✅ Confirm Order on WhatsApp
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<footer>
+
+<h3>Nepali Food Junction</h3>
+
+<p>Authentic Taste • Fresh Food • Happy Customers</p>
+
+<br>
+
+<p>© 2026 Nepali Food Junction</p>
+
+</footer>
+
+
+<script>
+
+let cart = [];
+
+let customerDetails = {};
+
+const UPI_ID = "paytm.s2e1x2j@pty";
+
+const WHATSAPP_NUMBER = "919149920841";
+
+
+/* =========================
+ADD TO CART
+========================= */
+
+function addToCart(name,price){
+
+    let item = cart.find(
+        item => item.name === name
+    );
+
+    if(item){
+
+        item.qty++;
+
+    }else{
+
+        cart.push({
+            name:name,
+            price:price,
+            qty:1
+        });
+
+    }
+
+    updateCart();
+
+    /* QR automatically refresh */
+    refreshPaymentQR();
+}
+
+
+/* =========================
+UPDATE CART
+========================= */
+
+function updateCart(){
+
+    const cartItems =
+        document.getElementById("cartItems");
+
+    let total = 0;
+    let count = 0;
+
+    cartItems.innerHTML = "";
+
+    if(cart.length === 0){
+
+        cartItems.innerHTML =
+        `<div class="empty-cart">
+        Your cart is empty 🛒
+        </div>`;
+
+    }
+
+    cart.forEach((item,index)=>{
+
+        let itemTotal =
+            item.price * item.qty;
+
+        total += itemTotal;
+
+        count += item.qty;
+
+        cartItems.innerHTML += `
+
+        <div class="cart-item">
+
+            <div class="cart-item-info">
+
+                <strong>${item.name}</strong>
+
+                ₹${item.price} × ${item.qty}
+
+                <br>
+
+                <b>₹${itemTotal}</b>
+
+            </div>
+
+            <div class="qty-controls">
+
+                <button onclick="decreaseQty(${index})">
+                −
+                </button>
+
+                <span>${item.qty}</span>
+
+                <button onclick="increaseQty(${index})">
+                +
+                </button>
+
+            </div>
+
+            <button
+            class="remove-btn"
+            onclick="removeItem(${index})">
+            ×
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+    document.getElementById("cartCount").innerText = count;
+
+    document.getElementById("cartTotal").innerText = total;
+}
+
+
+/* =========================
+QUANTITY +
+========================= */
+
+function increaseQty(index){
+
+    cart[index].qty++;
+
+    updateCart();
+
+    refreshPaymentQR();
+}
+
+
+/* =========================
+QUANTITY -
+========================= */
+
+function decreaseQty(index){
+
+    if(cart[index].qty > 1){
+
+        cart[index].qty--;
+
+    }else{
+
+        cart.splice(index,1);
+
+    }
+
+    updateCart();
+
+    refreshPaymentQR();
+}
+
+
+/* =========================
+REMOVE
+========================= */
+
+function removeItem(index){
+
+    cart.splice(index,1);
+
+    updateCart();
+
+    refreshPaymentQR();
+}
+
+
+/* =========================
+TOTAL
+========================= */
+
+function getCartTotal(){
+
+    return cart.reduce(
+        (total,item)=>
+        total + item.price * item.qty,
+        0
+    );
+}
+
+
+/* =========================
+CART OPEN
+========================= */
+
+function openCart(){
+
+    document
+    .getElementById("cartSidebar")
+    .classList.add("open");
+
+}
+
+
+function closeCart(){
+
+    document
+    .getElementById("cartSidebar")
+    .classList.remove("open");
+
+}
+
+
+/* =========================
+CUSTOMER MODAL
+========================= */
+
+function openCustomerModal(){
+
+    if(cart.length === 0){
+
+        alert("Please add at least one item.");
+
+        return;
+
+    }
+
+    closeCart();
+
+    document
+    .getElementById("customerModal")
+    .style.display = "flex";
+}
+
+
+function closeCustomerModal(){
+
+    document
+    .getElementById("customerModal")
+    .style.display = "none";
+
+}
+
+
+/* =========================
+PAYMENT
+========================= */
+
+function continueToPayment(){
+
+    const name =
+    document.getElementById("customerName").value.trim();
+
+    const phone =
+    document.getElementById("customerPhone").value.trim();
+
+    const address =
+    document.getElementById("customerAddress").value.trim();
+
+
+    if(!name || !phone || !address){
+
+        alert(
+        "Please fill Name, Phone and Address."
+        );
+
+        return;
+    }
+
+
+    customerDetails = {
+        name:name,
+        phone:phone,
+        address:address
+    };
+
+
+    closeCustomerModal();
+
+
+    document
+    .getElementById("paymentModal")
+    .style.display = "flex";
+
+
+    /* Generate fresh QR */
+    refreshPaymentQR();
+}
+
+
+/* =========================
+QR REFRESH
+========================= */
+
+function refreshPaymentQR(){
+
+    const total = getCartTotal();
+
+    const amountElement =
+        document.getElementById("paymentAmount");
+
+    const qrBox =
+        document.getElementById("qrCode");
+
+    const upiButton =
+        document.getElementById("upiButton");
+
+
+    /* Update amount */
+
+    amountElement.innerText = total;
+
+
+    /*
+    IMPORTANT:
+    Old QR completely delete
+    */
+
+    qrBox.innerHTML = "";
+
+
+    if(total <= 0){
+
+        upiButton.href = "#";
+
+        return;
+    }
+
+
+    /*
+    Create new UPI link
+    */
+
+    const upiURL =
+        "upi://pay" +
+        "?pa=" + encodeURIComponent(UPI_ID) +
+        "&pn=" + encodeURIComponent("Nepali Food Junction") +
+        "&am=" + encodeURIComponent(total.toFixed(2)) +
+        "&cu=INR" +
+        "&tn=" + encodeURIComponent("Nepali Food Junction Order");
+
+
+    /*
+    Generate NEW QR
+    */
+
+    if(typeof QRCode !== "undefined"){
+
+        new QRCode(qrBox,{
+
+            text:upiURL,
+
+            width:220,
+
+            height:220,
+
+            correctLevel:QRCode.CorrectLevel.H
+
+        });
+
+    }
+
+
+    /*
+    UPI APP BUTTON
+    */
+
+    upiButton.href = upiURL;
+}
+
+
+/* =========================
+CLOSE PAYMENT
+========================= */
+
+function closePaymentModal(){
+
+    document
+    .getElementById("paymentModal")
+    .style.display = "none";
+}
+
+
+/* =========================
+ORDER ID
+========================= */
+
+function generateOrderID(){
+
+    return "NFJ-" +
+    Date.now().toString().slice(-8);
+
+}
+
+
+/* =========================
+WHATSAPP ORDER
+========================= */
+
+function confirmOrder(){
+
+    if(cart.length === 0){
+
+        alert("Cart is empty.");
+
+        return;
+    }
+
+
+    const utr =
+        document
+        .getElementById("utrNumber")
+        .value.trim();
+
+
+    if(!utr){
+
+        alert(
+        "Please enter UTR / Transaction ID."
+        );
+
+        return;
+    }
+
+
+    const orderID =
+        generateOrderID();
+
+    const total =
+        getCartTotal();
+
+
+    let message =
+    "🍜 *NEW ORDER - NEPALI FOOD JUNCTION*%0A%0A";
+
+
+    message +=
+    "🆔 Order ID: " +
+    encodeURIComponent(orderID) +
+    "%0A";
+
+
+    message +=
+    "👤 Customer: " +
+    encodeURIComponent(customerDetails.name) +
+    "%0A";
+
+
+    message +=
+    "📞 Phone: " +
+    encodeURIComponent(customerDetails.phone) +
+    "%0A";
+
+
+    message +=
+    "📍 Address: " +
+    encodeURIComponent(customerDetails.address) +
+    "%0A%0A";
+
+
+    message +=
+    "🍽️ *ORDER ITEMS*%0A";
+
+
+    cart.forEach(item=>{
+
+        message +=
+        "• " +
+        encodeURIComponent(item.name) +
+        " × " +
+        item.qty +
+        " = ₹" +
+        (item.price * item.qty) +
+        "%0A";
+
+    });
+
+
+    message +=
+    "%0A💰 *TOTAL: ₹" +
+    total +
+    "*%0A";
+
+
+    message +=
+    "💳 UTR: " +
+    encodeURIComponent(utr) +
+    "%0A";
+
+
+    message +=
+    "%0AThank you for ordering from Nepali Food Junction ❤️";
+
+
+    const whatsappURL =
+        "https://wa.me/" +
+        WHATSAPP_NUMBER +
+        "?text=" +
+        message;
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
+
+}
+
+
+/* Initial cart */
+
+updateCart();
+
+</script>
+
+</body>
+</html>
